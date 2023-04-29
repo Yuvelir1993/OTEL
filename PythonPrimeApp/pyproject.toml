@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "prime-app"
+version = "0.1.0"
+description = ""
+authors = ["plozovik <plozovikov@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "prime_app" }]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+flask = "^2.3.1"
+opentelemetry-api = "^1.17.0"
+opentelemetry-sdk = "^1.17.0"
+opentelemetry-distro = "^0.38b0"
+opentelemetry-exporter-jaeger = "^1.17.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
