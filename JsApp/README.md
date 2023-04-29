@@ -3,7 +3,7 @@
 # Start app server
 ## Autoinstrumented
 [Auto instrumentation](https://opentelemetry.io/docs/instrumentation/js/getting-started/nodejs/)
-`node --require ./instrumentation.js app.js`
+`node --require ./auto-instrumentation.js app.js`
 ## Manually instrumented
 [Manual instrumentation](https://opentelemetry.io/docs/instrumentation/js/instrumentation/)
 This gets you customized observability data.
