@@ -2,24 +2,18 @@
 [Getting Started](https://opentelemetry.io/docs/instrumentation/python/getting-started/)
 
 ## Prepare environment
-Run scripts below from cmd from the root project dir.
+Run scripts below from cmd from the root project dirs.
 
 !!! Use Python 3.9.0 !!!
 
-### Activate env
-`python -m venv .`
-`Scripts\activate.bat`
+### Install all dependencies from the poetry.lock
+`poetry install`
 
-### Install Flask and OpenTelemetry
-`pip install flask opentelemetry-distro opentelemetry-exporter-jaeger`
-
-## Instrument
-
-### Manual instrumentation (Trace + Span + Metrics)
+### Manually instrument the app (Trace + Span + Metrics)
 Captures system on the edges and what's happening inside, depending on how you instrumented your app.
 
 [Manual Instrumentation](https://opentelemetry.io/docs/instrumentation/python/manual/)
-`opentelemetry-bootstrap -a install`
+`poetry run opentelemetry-bootstrap -a install`
 
 The `opentelemetry-bootstrap -a install` command reads through the list of packages installed in your active site-packages folder, 
 and installs the corresponding instrumentation libraries for these packages, if applicable. For example, if you already installed 
@@ -29,7 +23,7 @@ the flask package, running `opentelemetry-bootstrap -a install` will install ope
 Apply to the otel-collector/README.md
 
 #### Run the instrumented app (no console prints)
-`opentelemetry-instrument flask run --port=80`
+`poetry run opentelemetry-instrument flask run --port=80`
 
 #### Execute REST GET request from postman (or any other)
 `http://127.0.0.1:5000/rolldice`
