@@ -1,3 +1,4 @@
+/* Auto isntrumentation */
 const opentelemetry = require("@opentelemetry/sdk-node");
 const {
   getNodeAutoInstrumentations,

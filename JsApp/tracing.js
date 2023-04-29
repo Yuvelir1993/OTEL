@@ -1,3 +1,4 @@
+/* Manual tracing isntrumentation */
 const opentelemetry = require("@opentelemetry/api");
 const { Resource } = require("@opentelemetry/resources");
 const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
