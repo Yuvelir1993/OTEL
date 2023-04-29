@@ -7,7 +7,7 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-app.get("/rolldice", (req, res) => {
+app.get("/entry", (req, res) => {
   res.send(getRandomNumber(1, 6).toString());
 });
 
