@@ -23,7 +23,7 @@ the flask package, running `opentelemetry-bootstrap -a install` will install ope
 Apply to the otel-collector/README.md
 
 #### Run the instrumented app (no console prints)
-`poetry run opentelemetry-instrument flask run --port=80`
+`poetry run opentelemetry-instrument flask --app=prime_app.app run --port=80`
 
 #### Execute REST GET request from postman (or any other)
 `http://127.0.0.1:5000/rolldice`
