@@ -43,8 +43,8 @@ app = Flask(__name__)
 app.wsgi_app = OpenTelemetryMiddleware(app.wsgi_app)
 
 
-@app.route("/rolldice")
-def roll_dice():
+@app.route("/prime")
+def prime_entrypoint():
     do_work()
     do_exception()
     return str(do_roll())
@@ -76,7 +76,7 @@ def do_roll():
             print(baggage.get_baggage("context", global_ctx))
             print(baggage.get_baggage("context", parent_ctx))
             print(baggage.get_baggage("context", child_ctx))
-            secondary_response = requests.get('http://127.0.0.1:90/secondary', timeout=10)
+            secondary_response = requests.get('http://127.0.0.1:7090/secondary', timeout=10)
             if secondary_response.status_code == 200:
                 # do something with the data
                 child_span.set_attribute("my.secondary.response", secondary_response.text)

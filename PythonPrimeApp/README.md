@@ -23,8 +23,8 @@ the flask package, running `opentelemetry-bootstrap -a install` will install ope
 Apply to the otel-collector/README.md
 
 #### Run the instrumented app (no console prints)
-`poetry run opentelemetry-instrument flask --app=prime_app.app run --port=80`
+`poetry run opentelemetry-instrument flask --app=prime_app.app run --port=7080`
 
 #### Execute REST GET request from postman (or any other)
-`http://127.0.0.1:5000/rolldice`
+`http://127.0.0.1:7080/prime`
 You can see traces with related spans, and manually added metrics logging in the Collector's console output.
