@@ -477,6 +477,22 @@ opentelemetry-sdk = ">=1.11,<2.0"
 thrift = ">=0.10.0"
 
 [[package]]
+name = "opentelemetry-exporter-otlp"
+version = "1.17.0"
+description = "OpenTelemetry Collector Exporters"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "opentelemetry_exporter_otlp-1.17.0-py3-none-any.whl", hash = "sha256:9708d2b74c9205a7bd9b46e24acec0e3b362465d9a77b62347ea0459d4358044"},
+    {file = "opentelemetry_exporter_otlp-1.17.0.tar.gz", hash = "sha256:d0fa02b512127b44493c75d12a2dc2557bf251b7f76b354cfaa58b0f820d04ae"},
+]
+
+[package.dependencies]
+opentelemetry-exporter-otlp-proto-grpc = "1.17.0"
+opentelemetry-exporter-otlp-proto-http = "1.17.0"
+
+[[package]]
 name = "opentelemetry-exporter-otlp-proto-grpc"
 version = "1.17.0"
 description = "OpenTelemetry Collector Protobuf over gRPC Exporter"
@@ -498,6 +514,29 @@ opentelemetry-sdk = ">=1.17.0,<1.18.0"
 
 [package.extras]
 test = ["pytest-grpc"]
+
+[[package]]
+name = "opentelemetry-exporter-otlp-proto-http"
+version = "1.17.0"
+description = "OpenTelemetry Collector Protobuf over HTTP Exporter"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "opentelemetry_exporter_otlp_proto_http-1.17.0-py3-none-any.whl", hash = "sha256:81959249b75bd36c3b73c885a9ce36aa21e8022618e8e95fa41ae69609f0c799"},
+    {file = "opentelemetry_exporter_otlp_proto_http-1.17.0.tar.gz", hash = "sha256:329984da861ee2cc42c4bc5ae1b80092fb76a0ea5a24b3519bc3b52572197fec"},
+]
+
+[package.dependencies]
+backoff = {version = ">=1.10.0,<3.0.0", markers = "python_version >= \"3.7\""}
+googleapis-common-protos = ">=1.52,<2.0"
+opentelemetry-api = ">=1.15,<2.0"
+opentelemetry-proto = "1.17.0"
+opentelemetry-sdk = ">=1.17.0,<1.18.0"
+requests = ">=2.7,<3.0"
+
+[package.extras]
+test = ["responses (==0.22.0)"]
 
 [[package]]
 name = "opentelemetry-instrumentation"
@@ -847,4 +886,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "14d441c0b79b0120d22544a399bd52cc2ef36d0acb6003b297e1fcbb186feb78"
+content-hash = "1e8cd3313bee78e56d2ce9b5223a548adc10eefb21cb20e626cdb048064cb1f7"
