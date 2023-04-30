@@ -1,5 +1,6 @@
 /* Auto isntrumentation */
 const opentelemetry = require("@opentelemetry/sdk-node");
+const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace-node');
 const {
   getNodeAutoInstrumentations,
 } = require("@opentelemetry/auto-instrumentations-node");
@@ -15,19 +16,9 @@ const {
 } = require('@opentelemetry/sdk-metrics');
 
 const sdk = new opentelemetry.NodeSDK({
-  traceExporter: new OTLPTraceExporter({
-    // optional - default url is http://localhost:4318/v1/traces
-    // url: "<your-otlp-endpoint>/v1/traces",
-    // optional - collection of custom headers to be sent with each request, empty by default
-    headers: {},
-  }),
+  traceExporter: new ConsoleSpanExporter(),
   metricReader: new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter({
-    // url is optional and can be omitted - default is http://localhost:4318/v1/metrics
-    // url: '<your-otlp-endpoint>/v1/metrics',
-      headers: {}, // an optional object containing custom headers to be sent with each request
-      concurrencyLimit: 1, // an optional limit on pending requests
-    }),
+    exporter: new ConsoleMetricExporter()
   }),
   instrumentations: [getNodeAutoInstrumentations()],
 });
