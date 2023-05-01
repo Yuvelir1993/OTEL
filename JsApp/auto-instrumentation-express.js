@@ -1,5 +1,5 @@
 const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
+const { BatchSpanProcessor, AlwaysOnSampler } = require('@opentelemetry/sdk-trace-base');
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
 const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
@@ -10,8 +10,10 @@ const opentelemetry = require('@opentelemetry/api');
 
 const setupTracing = (serviceName) => {
     const provider = new NodeTracerProvider({
+        sampler: new AlwaysOnSampler(),
         resource: new Resource({
             [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
+            [SemanticResourceAttributes.SERVICE_VERSION]: "0.1.0",
         }),
     });
     provider.register();
@@ -31,7 +33,7 @@ const setupTracing = (serviceName) => {
         // optional - collection of custom headers to be sent with each request, empty by default
         headers: {},
     });
-    provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
+    provider.addSpanProcessor(new BatchSpanProcessor(exporter));
     provider.register();
     return opentelemetry.trace.getTracer(serviceName);
 };
