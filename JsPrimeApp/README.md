@@ -3,4 +3,4 @@
 # Start app server
 ## Autoinstrumented-express
 [Auto instrumentation express](https://www.npmjs.com/package/@opentelemetry/instrumentation-express)
-`node --require app.js`
+`node app.js`

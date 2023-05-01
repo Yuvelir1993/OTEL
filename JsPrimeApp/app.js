@@ -1,6 +1,13 @@
+const { W3CTraceContextPropagator } = require("@opentelemetry/core");
+const {
+  defaultTextMapSetter,
+  ROOT_CONTEXT,
+} = require("@opentelemetry/api");
 const opentelemetry = require('@opentelemetry/api');
 const autoinstrExpressModule = require('./auto-instrumentation-express')
-const tracer = autoinstrExpressModule.setupTracing('JsApp');
+const { trace } = require("@opentelemetry/api");
+const tracer = autoinstrExpressModule.setupTracing('JsPrimeApp');
+
 const express = require("express");
 const PORT = parseInt(process.env.PORT || "8080");
 const app = express();
@@ -9,8 +16,25 @@ function generateRandNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-app.get("/entry", async (req, res) => {
+app.get("/jsPrime", async (req, res) => {
   const callPrimeSpan = tracer.startSpan('CallPythonPrimeApp');
+  const propagator = new W3CTraceContextPropagator();
+  let carrier = {};
+
+  propagator.inject(
+    trace.setSpanContext(ROOT_CONTEXT, callPrimeSpan.spanContext()),
+    carrier,
+    defaultTextMapSetter
+  );
+  console.log("carrier", carrier); // transport this carrier info to other service via headers or some other way 
+
+  // --- context propagation ---
+  // https://github.com/open-telemetry/opentelemetry-js/issues/2458
+  // // In downstream service
+  // const parentCtx = propagator.extract(ROOT_CONTEXT, carrier, defaultTextMapGetter);
+  // const childSpan = tracer.startSpan("child", undefined, parentCtx);
+  // ---------------------------
+
   const response = await fetch("http://127.0.0.1:7080/prime")
     .then((response) => {
       // Do something with response

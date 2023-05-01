@@ -6,15 +6,19 @@ const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-expre
 const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-proto");
 const { Resource } = require("@opentelemetry/resources");
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
-const opentelemetry = require('@opentelemetry/api');
+const { trace } = require("@opentelemetry/api");
 
 const setupTracing = (serviceName) => {
+    const resource =
+        Resource.default().merge(
+            new Resource({
+                [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
+                [SemanticResourceAttributes.SERVICE_VERSION]: "1.0.0",
+            })
+        );
     const provider = new NodeTracerProvider({
         sampler: new AlwaysOnSampler(),
-        resource: new Resource({
-            [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
-            [SemanticResourceAttributes.SERVICE_VERSION]: "0.1.0",
-        }),
+        resource: resource,
     });
     provider.register();
 
@@ -35,7 +39,7 @@ const setupTracing = (serviceName) => {
     });
     provider.addSpanProcessor(new BatchSpanProcessor(exporter));
     provider.register();
-    return opentelemetry.trace.getTracer(serviceName);
+    return trace.getTracer(serviceName);
 };
 
 module.exports = { setupTracing };

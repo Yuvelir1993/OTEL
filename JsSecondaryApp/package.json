@@ -1,12 +1,14 @@
 {
-  "name": "jsapp",
+  "name": "js-secondary-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "Js secondary app.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["OTEL"],
+  "keywords": [
+    "OTEL"
+  ],
   "author": "Pavlo Lozovikov",
   "license": "ISC",
   "dependencies": {
