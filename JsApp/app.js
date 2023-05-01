@@ -1,6 +1,6 @@
-const autoinstrExpress = require('./auto-instrumentation-express')
-autoinstrExpress.setupTracing('JsApp');
-
+const opentelemetry = require('@opentelemetry/api');
+const autoinstrExpressModule = require('./auto-instrumentation-express')
+const tracer = autoinstrExpressModule.setupTracing('JsApp');
 const express = require("express");
 const PORT = parseInt(process.env.PORT || "8080");
 const app = express();
@@ -10,19 +10,25 @@ function generateRandNumber(min, max) {
 }
 
 app.get("/entry", async (req, res) => {
+  const callPrimeSpan = tracer.startSpan('CallPythonPrimeApp');
   const response = await fetch("http://127.0.0.1:7080/prime")
     .then((response) => {
       // Do something with response
       console.log("DID IT!");
       console.log(response);
+      res.send(generateRandNumber(1, 6).toString());
     })
-    .catch(function (err) {
-      console.log("Unable to fetch -", err);
-      return err;
+    .catch(function (ex) {
+      callPrimeSpan.recordException(ex);
+      callPrimeSpan.setStatus({ code: opentelemetry.SpanStatusCode.ERROR });
+
+      console.log("Unable to fetch -", ex);
+      res.status(500);
+      res.send(ex);
     });
   console.log("RESPONSE after prime call");
   console.log(response);
-  res.send(generateRandNumber(1, 6).toString());
+  callPrimeSpan.end();
 });
 
 app.listen(PORT, () => {
