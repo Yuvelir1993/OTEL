@@ -1,3 +1,6 @@
+const autoinstrExpress = require('./auto-instrumentation-express')
+autoinstrExpress.setupTracing('JsApp');
+
 const express = require("express");
 const PORT = parseInt(process.env.PORT || "8080");
 const app = express();
