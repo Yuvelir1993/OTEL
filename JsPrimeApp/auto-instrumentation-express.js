@@ -7,6 +7,8 @@ const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-proto"
 const { Resource } = require("@opentelemetry/resources");
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 const { trace } = require("@opentelemetry/api");
+const { AsyncHooksContextManager } = require("@opentelemetry/context-async-hooks");
+const { CompositePropagator, W3CBaggagePropagator, W3CTraceContextPropagator } = require('@opentelemetry/core');
 
 const setupTracing = (serviceName) => {
     const resource =
@@ -20,7 +22,23 @@ const setupTracing = (serviceName) => {
         sampler: new AlwaysOnSampler(),
         resource: resource,
     });
-    provider.register();
+
+    const exporter = new OTLPTraceExporter({
+        // optional - default url is http://localhost:4318/v1/traces
+        url: "http://localhost:4318/v1/traces",
+        // optional - collection of custom headers to be sent with each request, empty by default
+        headers: {},
+    });
+
+    provider.addSpanProcessor(new BatchSpanProcessor(exporter));
+    const contextManager = new AsyncHooksContextManager();
+
+    provider.register({
+        contextManager,
+        propagator: new CompositePropagator({
+            propagators: [new W3CBaggagePropagator(), new W3CTraceContextPropagator()],
+        }),
+    });
 
     registerInstrumentations({
         tracerProvider: provider,
@@ -30,15 +48,6 @@ const setupTracing = (serviceName) => {
             new ExpressInstrumentation(),
         ],
     });
-
-    const exporter = new OTLPTraceExporter({
-        // optional - default url is http://localhost:4318/v1/traces
-        url: "http://localhost:4318/v1/traces",
-        // optional - collection of custom headers to be sent with each request, empty by default
-        headers: {},
-    });
-    provider.addSpanProcessor(new BatchSpanProcessor(exporter));
-    provider.register();
     return trace.getTracer(serviceName);
 };
 

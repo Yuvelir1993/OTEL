@@ -1,28 +1,34 @@
 const { W3CTraceContextPropagator } = require("@opentelemetry/core");
+const { context, propagation, trace, metrics } = require('@opentelemetry/api');
 const {
   defaultTextMapGetter,
   ROOT_CONTEXT,
 } = require("@opentelemetry/api");
 
 const autoinstrExpressModule = require('./auto-instrumentation-express')
-const { trace } = require("@opentelemetry/api");
 const tracer = autoinstrExpressModule.setupTracing('JsSecondaryApp');
 
 const express = require("express");
 const PORT = parseInt(process.env.PORT || "8090");
 const app = express();
+const propagator = new W3CTraceContextPropagator();
+const parentCtx = propagator.extract(ROOT_CONTEXT, {}, defaultTextMapGetter);
 
 app.get("/jsSecondary", async (req, res) => {
-  const propagator = new W3CTraceContextPropagator();
   // Ingect here as in the JsPrimeApp ?
   // --- context propagation ---
   // https://github.com/open-telemetry/opentelemetry-js/issues/2458
   // In downstream service
-  const parentCtx = propagator.extract(ROOT_CONTEXT, {}, defaultTextMapGetter);
-  const jsSecondaryAppSpan = tracer.startSpan("JsSecondaryAppSpan", undefined, parentCtx);
+  console.log("parentCtx");
+  console.log(parentCtx);
+  const baggage = propagation.getBaggage(context.active());
+  console.log("baggage");
+  console.log(baggage);
+  const jsSecondaryAppSpan = tracer.startSpan("JsSecondaryAppSpan");
+  // const jsSecondaryAppSpan = tracer.startSpan("JsSecondaryAppSpan", undefined, parentCtx);
   // ---------------------------
-  jsSecondaryAppSpan.end();
   res.send("Hello from JsSecondaryApp");
+  jsSecondaryAppSpan.end();
 });
 
 app.listen(PORT, () => {

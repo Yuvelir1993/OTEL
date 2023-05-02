@@ -1,4 +1,4 @@
-const { W3CTraceContextPropagator } = require("@opentelemetry/core");
+const { W3CTraceContextPropagator, W3CBaggagePropagator } = require("@opentelemetry/core");
 const {
   defaultTextMapSetter,
   ROOT_CONTEXT,
@@ -17,7 +17,8 @@ function generateRandNumber(min, max) {
 }
 
 app.get("/jsPrime", async (req, res) => {
-  const callPrimeSpan = tracer.startSpan('CallPythonPrimeApp');
+  const callPrimeSpan = tracer.startSpan('jsPrimeEntry');
+  callPrimeSpan.addEvent("REST call start")
   const propagator = new W3CTraceContextPropagator();
   let carrier = {};
 
@@ -35,23 +36,22 @@ app.get("/jsPrime", async (req, res) => {
   // const childSpan = tracer.startSpan("child", undefined, parentCtx);
   // ---------------------------
 
-  const response = await fetch("http://127.0.0.1:7080/prime")
-    .then((response) => {
-      // Do something with response
-      console.log("DID IT!");
-      console.log(response);
-      res.send(generateRandNumber(1, 6).toString());
-    })
-    .catch(function (ex) {
-      callPrimeSpan.recordException(ex);
-      callPrimeSpan.setStatus({ code: opentelemetry.SpanStatusCode.ERROR });
+  tracer.startActiveSpan(callPrimeSpan, async () => {
+    await fetch("http://127.0.0.1:8090/jsSecondary")
+      .then((response) => {
+        console.log("DID IT!");
+        console.log(response);
+        res.send(generateRandNumber(1, 6).toString());
+      })
+      .catch(function (ex) {
+        callPrimeSpan.recordException(ex);
+        callPrimeSpan.setStatus({ code: opentelemetry.SpanStatusCode.ERROR });
 
-      console.log("Unable to fetch -", ex);
-      res.status(500);
-      res.send(ex);
-    });
-  console.log("RESPONSE after prime call");
-  console.log(response);
+        console.log("Unable to fetch -", ex);
+        res.status(500);
+        res.send(ex);
+      });
+  })
   callPrimeSpan.end();
 });
 
