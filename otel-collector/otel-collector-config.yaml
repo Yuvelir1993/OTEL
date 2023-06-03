@@ -6,20 +6,26 @@ receivers:
 
 exporters:
     logging:
-        loglevel: debug
+        loglevel: info
     jaeger:
         endpoint: jaeger-all-in-one:14250
         tls:
             insecure: true
-    file: # the File Exporter, to ingest logs to local file
-        path: "./MyApps.log"
-        rotation:
 
 processors:
     memory_limiter:
         check_interval: 1s
         limit_mib: 2000
     batch:
+    attributes:
+        actions:
+            - key: environment
+              value: production
+              action: insert
+            - key: password
+              action: delete
+            - key: email
+              action: hash
 
 extensions:
     health_check:
@@ -31,12 +37,12 @@ service:
     pipelines:
         traces:
             receivers: [ otlp ]
-            exporters: [ logging, jaeger ]
-            processors: [ batch ]
+            exporters: [ jaeger ]
+            processors: [ memory_limiter, batch, attributes ]
         metrics:
             receivers: [ otlp ]
             exporters: [ logging ]
             processors: [ batch ]
         logs:
             receivers: [ otlp ]
-            exporters: [ logging, file ]
+            exporters: [ logging ]
