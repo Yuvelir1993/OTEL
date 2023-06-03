@@ -1,39 +1,42 @@
 receivers:
-  otlp:
-    protocols:
-      grpc:
-      http:
+    otlp:
+        protocols:
+            grpc:
+            http:
 
 exporters:
-  logging:
-    loglevel: debug
-  jaeger:
-    endpoint: jaeger-all-in-one:14250
-    tls:
-      insecure: true
+    logging:
+        loglevel: debug
+    jaeger:
+        endpoint: jaeger-all-in-one:14250
+        tls:
+            insecure: true
+    file: # the File Exporter, to ingest logs to local file
+        path: "./MyApps.log"
+        rotation:
 
 processors:
-  memory_limiter:
-    check_interval: 1s
-    limit_mib: 2000
-  batch:
+    memory_limiter:
+        check_interval: 1s
+        limit_mib: 2000
+    batch:
 
 extensions:
-  health_check:
-  pprof:
-  zpages:
+    health_check:
+    pprof:
+    zpages:
 
 service:
-  extensions: [ health_check, pprof, zpages ]
-  pipelines:
-    traces:
-      receivers: [ otlp ]
-      exporters: [ logging, jaeger ]
-      processors: [ batch]
-    metrics:
-      receivers: [ otlp]
-      exporters: [ logging ]
-      processors: [ batch]
-    logs:
-      receivers: [ otlp ]
-      exporters: [ logging ]
+    extensions: [ health_check, pprof, zpages ]
+    pipelines:
+        traces:
+            receivers: [ otlp ]
+            exporters: [ logging, jaeger ]
+            processors: [ batch ]
+        metrics:
+            receivers: [ otlp ]
+            exporters: [ logging ]
+            processors: [ batch ]
+        logs:
+            receivers: [ otlp ]
+            exporters: [ logging, file ]
