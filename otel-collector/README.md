@@ -9,5 +9,8 @@ Execute the command below using Ubuntu terminal from the 'otel-collector' folder
 `docker compose up`
 http://localhost:16686/
 
+### ZPages for quick collector overview
+http://localhost:55679/debug/servicez
+
 ## Install Collector exporter
 `pip install opentelemetry-exporter-otlp`
