@@ -16,6 +16,18 @@ function generateRandNumber(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
+app.post("/commonContext", async (req, res) => {
+    await fetch("http://127.0.0.1:8090/commonContext")
+        .then((response) => {
+            res.send("Called 'commonContext' API.");
+        })
+        .catch(function (ex) {
+            console.log("Unable to fetch -", ex);
+            res.status(500);
+            res.send(ex);
+        });
+})
+
 app.get("/jsPrime", async (req, res) => {
     const callPrimeSpan = tracer.startSpan('jsPrimeEntry');
     callPrimeSpan.addEvent("REST call start")
