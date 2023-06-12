@@ -35,10 +35,10 @@ extensions:
 
 service:
     telemetry:
-        logs:
-            level: debug
-            initial_fields:
-                service: my-collector-instance
+ #       logs:
+#            level: debug
+ #           initial_fields:
+ #               service: my-collector-instance
         metrics:
             level: detailed
             address: 0.0.0.0:8888
