@@ -26,6 +26,7 @@ const setupTracing = (serviceName) => {
     
     const exporter = new OTLPTraceExporter({
         // optional - default url is http://localhost:4318/v1/traces
+        // try http://127.0.0.1:4318 as in the PythonPrimeApp
         url: "http://localhost:4318/v1/traces",
         // optional - collection of custom headers to be sent with each request, empty by default
         headers: {},
