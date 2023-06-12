@@ -17,7 +17,7 @@ import requests
 # Acquire a meter.
 meter = metrics.get_meter(__name__)
 
-otlp_endpoint = "http://127.0.0.1:4317"
+otlp_endpoint = "http://127.0.0.1:4318"
 resource = Resource.create(attributes={
     SERVICE_NAME: "Primary"
 })
@@ -44,7 +44,8 @@ app.wsgi_app = OpenTelemetryMiddleware(app.wsgi_app)
 def prime_entrypoint():
     do_work()
     do_exception()
-    return str(do_roll())
+    roll_result = str(do_roll())
+    return roll_result
 
 
 def do_roll():
@@ -64,12 +65,13 @@ def do_roll():
         do_os_error()
         root_span.set_status(Status(StatusCode.OK))
         with tracer.start_as_current_span(
-                name="child span", context=parent_ctx
+                name="child_span", context=parent_ctx
         ) as child_span:
             print("Entered child span!")
             child_span.set_attribute("my.value", "child-custom-value")
             child_span.add_event("Child span!")
             child_ctx = baggage.set_baggage("context", "child")
+            print("baggage of global context below \/")
             print("baggage of global context: " + baggage.get_baggage("context", global_ctx))
             print("baggage of parent context: " + baggage.get_baggage("context", parent_ctx))
             print("baggage of child context: " + baggage.get_baggage("context", child_ctx))

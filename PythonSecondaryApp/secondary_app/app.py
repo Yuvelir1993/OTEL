@@ -15,7 +15,7 @@ from opentelemetry.instrumentation.wsgi import OpenTelemetryMiddleware
 # Acquire a meter.
 meter = metrics.get_meter(__name__)
 
-otlp_endpoint = "http://127.0.0.1:4317"
+otlp_endpoint = "http://127.0.0.1:4318"
 
 resource = Resource.create(attributes={
     SERVICE_NAME: "Secondary"
