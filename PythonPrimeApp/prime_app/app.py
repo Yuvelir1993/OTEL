@@ -70,9 +70,9 @@ def do_roll():
             child_span.set_attribute("my.value", "child-custom-value")
             child_span.add_event("Child span!")
             child_ctx = baggage.set_baggage("context", "child")
-            print(baggage.get_baggage("context", global_ctx))
-            print(baggage.get_baggage("context", parent_ctx))
-            print(baggage.get_baggage("context", child_ctx))
+            print("baggage of global context: " + baggage.get_baggage("context", global_ctx))
+            print("baggage of parent context: " + baggage.get_baggage("context", parent_ctx))
+            print("baggage of child context: " + baggage.get_baggage("context", child_ctx))
             secondary_response = requests.get('http://127.0.0.1:7090/secondary', timeout=10)
             if secondary_response.status_code == 200:
                 # do something with the data
