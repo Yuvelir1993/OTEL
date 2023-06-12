@@ -2,6 +2,7 @@ import time
 
 from opentelemetry import trace, baggage
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.trace import Status, StatusCode
 from opentelemetry import metrics
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
@@ -15,16 +16,15 @@ from opentelemetry.instrumentation.wsgi import OpenTelemetryMiddleware
 # Acquire a meter.
 meter = metrics.get_meter(__name__)
 
-resource = Resource(attributes={
-    SERVICE_NAME: "Some secondary service"
+otlp_endpoint = "http://127.0.0.1:4317"
+
+resource = Resource.create(attributes={
+    SERVICE_NAME: "Secondary"
 })
 
-jaeger_exporter = JaegerExporter(
-    agent_host_name="localhost",
-    agent_port=6831,
-)
+otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint, insecure=True)
 provider = TracerProvider(resource=resource)
-processor = BatchSpanProcessor(jaeger_exporter)
+processor = BatchSpanProcessor(otlp_exporter)
 provider.add_span_processor(processor)
 trace.set_tracer_provider(provider)
 
