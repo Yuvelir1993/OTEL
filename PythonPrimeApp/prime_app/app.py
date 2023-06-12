@@ -1,7 +1,6 @@
 import time
 
 from opentelemetry import trace, baggage
-# from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.trace import Status, StatusCode
 from opentelemetry import metrics
