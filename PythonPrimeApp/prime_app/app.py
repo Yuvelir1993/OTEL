@@ -1,8 +1,8 @@
 import time
 
 from opentelemetry import trace, baggage
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-# from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+# from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.trace import Status, StatusCode
 from opentelemetry import metrics
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
@@ -22,7 +22,7 @@ otlp_endpoint = "http://127.0.0.1:4317"
 resource = Resource.create(attributes={
     SERVICE_NAME: "Primary"
 })
-otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint, insecure=True)
+otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint)
 provider = TracerProvider(resource=resource)
 processor = BatchSpanProcessor(span_exporter=otlp_exporter)
 provider.add_span_processor(processor)
