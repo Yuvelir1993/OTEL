@@ -1,12 +1,12 @@
 receivers:
     otlp:
         protocols:
-            grpc:
+            # grpc:
             http:
 
 exporters:
     logging:
-        loglevel: info
+        loglevel: debug
     jaeger:
         endpoint: jaeger-all-in-one:14250
         tls:
