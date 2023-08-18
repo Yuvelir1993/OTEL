@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "@opentelemetry/context-async-hooks": "^1.12.0"
-  }
-}
