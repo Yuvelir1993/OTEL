@@ -1,2 +1,2 @@
 # OTEL
-Set of related applications written in different languages to learn OpenTelemetry
+Passing context example for article.
