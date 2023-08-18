@@ -9,8 +9,12 @@ const PORT = parseInt(process.env.PORT || "8090");
 const app = express();
 
 app.get("/jsSecondary", async (req, res) => {
+    /*
+    * 'my-traceparent-id' has been passed from the upstream service.
+    * In our case this contains Trace id we want to use to extract parent context further.
+    */
     const traceparentId = req.headers['my-traceparent-id'];
-    let carrier = {
+    const carrier = {
         traceparent: traceparentId
     };
     const parentCtx = propagator.extract(context.active(), carrier, defaultTextMapGetter);

@@ -7,9 +7,15 @@ const express = require("express");
 const PORT = parseInt(process.env.PORT || "8080");
 const app = express();
 
-app.get("/jsPrime", async (req, res) => {
-    const callPrimeSpan = tracer.startSpan('jsPrimeEntry');
+app.get("/jsPrime", async (req, res) => {    
+    /* 
+    * Propagator implementation based on the Trace Context specification:
+    * https://www.w3.org/TR/trace-context/
+    */
     const propagator = new W3CTraceContextPropagator();
+    /*
+    * Carrier object will contain all necessary fields injected further by the 'W3CTraceContextPropagator'
+    */
     let carrier = {};
     propagator.inject(
         context.active(),
@@ -21,24 +27,32 @@ app.get("/jsPrime", async (req, res) => {
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            /*
+            * 'traceparent' was injected by propagator. 
+            * Detailed spec of this field you can find in the spec https://www.w3.org/TR/trace-context/ docu.
+            */
             'my-traceparent-id': carrier.traceparent
         }
     };
-    tracer.startActiveSpan(callPrimeSpan, async () => {
+    const jsPrimeAppSpan = tracer.startSpan('JsPrimeAppSpan');
+    tracer.startActiveSpan(jsPrimeAppSpan, async () => {
+        /*
+        * It's important to pass 'settings' here to deserialize included headers on the receiver side.
+        */
         await fetch("http://127.0.0.1:8090/jsSecondary", settings)
             .then((response) => {
                 res.send("Return from the 'jsSecondaryApp'.");
             })
             .catch(function (ex) {
-                callPrimeSpan.recordException(ex);
-                callPrimeSpan.setStatus({ code: opentelemetry.SpanStatusCode.ERROR });
+                jsPrimeAppSpan.recordException(ex);
+                jsPrimeAppSpan.setStatus({ code: opentelemetry.SpanStatusCode.ERROR });
 
                 console.log("Unable to fetch -", ex);
                 res.status(500);
                 res.send(ex);
             });
     })
-    callPrimeSpan.end();
+    jsPrimeAppSpan.end();
 });
 
 app.listen(PORT, () => {
