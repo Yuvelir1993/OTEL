@@ -37,7 +37,7 @@ app.get("/jsPrime", async (req, res) => {
     const jsPrimeAppSpan = tracer.startSpan('JsPrimeAppSpan');
     tracer.startActiveSpan(jsPrimeAppSpan, async () => {
         /*
-        * It's important to pass 'settings' here to deserialize included headers on the receiver side.
+        * It's important to pass 'settings' here to deserialize included headers on the Secondary app side.
         */
         await fetch("http://127.0.0.1:8090/jsSecondary", settings)
             .then((response) => {

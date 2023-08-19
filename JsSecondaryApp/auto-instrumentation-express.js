@@ -8,7 +8,7 @@ const { Resource } = require("@opentelemetry/resources");
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 const { trace } = require("@opentelemetry/api");
 const { AsyncHooksContextManager } = require("@opentelemetry/context-async-hooks");
-const { CompositePropagator, W3CTraceContextPropagator } = require('@opentelemetry/core');
+const { W3CTraceContextPropagator } = require('@opentelemetry/core');
 
 const setupTracing = (serviceName) => {
     const resource =
@@ -35,11 +35,9 @@ const setupTracing = (serviceName) => {
 
     provider.register({
         contextManager,
-        propagator: new CompositePropagator({
-            propagators: [new W3CTraceContextPropagator()],
-        }),
+        propagator: new W3CTraceContextPropagator()
     });
-    
+
     registerInstrumentations({
         tracerProvider: provider,
         instrumentations: [
